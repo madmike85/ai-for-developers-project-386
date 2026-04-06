@@ -16,7 +16,6 @@ import { PublicEventTypesPage } from './pages/PublicEventTypesPage';
 import { CalendarPage } from './pages/CalendarPage';
 import { TimeSlotsPage } from './pages/TimeSlotsPage';
 import { BookingConfirmPage } from './pages/BookingConfirmPage';
-import { useRoleStore } from './stores/useRoleStore';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,23 +25,6 @@ const queryClient = new QueryClient({
     },
   },
 });
-
-// Protected routes based on role
-const OwnerRoute = ({ children }: { children: React.ReactNode }) => {
-  const { role } = useRoleStore();
-  if (role !== 'owner') {
-    return <Navigate to="/" replace />;
-  }
-  return <>{children}</>;
-};
-
-const GuestRoute = ({ children }: { children: React.ReactNode }) => {
-  const { role } = useRoleStore();
-  if (role !== 'guest') {
-    return <Navigate to="/" replace />;
-  }
-  return <>{children}</>;
-};
 
 function App() {
   return (
@@ -57,63 +39,23 @@ function App() {
                 <Route path="/" element={<HomePage />} />
 
                 {/* Owner Routes */}
-                <Route
-                  path="/owner"
-                  element={
-                    <OwnerRoute>
-                      <OwnerDashboard />
-                    </OwnerRoute>
-                  }
-                />
-                <Route
-                  path="/owner/event-types"
-                  element={
-                    <OwnerRoute>
-                      <EventTypesPage />
-                    </OwnerRoute>
-                  }
-                />
-                <Route
-                  path="/owner/bookings"
-                  element={
-                    <OwnerRoute>
-                      <BookingsListPage />
-                    </OwnerRoute>
-                  }
-                />
+                <Route path="/owner" element={<OwnerDashboard />} />
+                <Route path="/owner/event-types" element={<EventTypesPage />} />
+                <Route path="/owner/bookings" element={<BookingsListPage />} />
 
                 {/* Guest Routes */}
-                <Route
-                  path="/book"
-                  element={
-                    <GuestRoute>
-                      <PublicEventTypesPage />
-                    </GuestRoute>
-                  }
-                />
+                <Route path="/book" element={<PublicEventTypesPage />} />
                 <Route
                   path="/book/:eventTypeId"
-                  element={
-                    <GuestRoute>
-                      <CalendarPage />
-                    </GuestRoute>
-                  }
+                  element={<CalendarPage />}
                 />
                 <Route
                   path="/book/:eventTypeId/slots"
-                  element={
-                    <GuestRoute>
-                      <TimeSlotsPage />
-                    </GuestRoute>
-                  }
+                  element={<TimeSlotsPage />}
                 />
                 <Route
                   path="/book/:eventTypeId/confirm"
-                  element={
-                    <GuestRoute>
-                      <BookingConfirmPage />
-                    </GuestRoute>
-                  }
+                  element={<BookingConfirmPage />}
                 />
 
                 {/* Fallback */}

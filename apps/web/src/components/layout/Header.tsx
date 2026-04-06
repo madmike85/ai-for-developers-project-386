@@ -1,43 +1,58 @@
-import { Group, Button, Title, Box } from '@mantine/core';
-import { IconCalendar, IconUser, IconUsers } from '@tabler/icons-react';
-import { useRoleStore } from '../../stores/useRoleStore';
-import type { UserRole } from '../../types';
+import { Group, Button, Box, Text } from '@mantine/core';
+import { IconCalendar } from '@tabler/icons-react';
+import { useNavigate } from 'react-router-dom';
 
 export const Header = () => {
-  const { role, setRole } = useRoleStore();
+  const navigate = useNavigate();
 
-  const handleRoleChange = (newRole: UserRole) => {
-    setRole(newRole);
+  const handleLogoClick = () => {
+    navigate('/');
+  };
+  const handleGuestClick = () => {
+    navigate('/book');
+  };
+
+  const handleOwnerClick = () => {
+    navigate('/owner');
   };
 
   return (
     <Box
       style={{
-        borderBottom: '1px solid var(--mantine-color-gray-3)',
-        padding: '16px 24px',
+        padding: '16px 80px',
         backgroundColor: 'white',
       }}
     >
       <Group justify="space-between" align="center">
-        <Group gap="xs">
-          <IconCalendar size={28} color="var(--mantine-color-blue-6)" />
-          <Title order={3}>Call Calendar</Title>
+        <Group gap="xs" onClick={handleLogoClick} style={{ cursor: 'pointer' }}>
+          <IconCalendar size={24} color="#f97316" />
+          <Text fw={600} size="lg">Calendar</Text>
         </Group>
 
-        <Group gap="xs">
+        <Group gap="lg">
           <Button
-            variant={role === 'owner' ? 'filled' : 'light'}
-            leftSection={<IconUser size={16} />}
-            onClick={() => handleRoleChange('owner')}
+            variant="subtle"
+            color="gray"
+            onClick={handleGuestClick}
+            styles={{
+              root: {
+                color: '#6b7280',
+              },
+            }}
           >
-            Owner
+            Book
           </Button>
           <Button
-            variant={role === 'guest' ? 'filled' : 'light'}
-            leftSection={<IconUsers size={16} />}
-            onClick={() => handleRoleChange('guest')}
+            variant="subtle"
+            color="gray"
+            onClick={handleOwnerClick}
+            styles={{
+              root: {
+                color: '#6b7280',
+              },
+            }}
           >
-            Guest
+            Admin
           </Button>
         </Group>
       </Group>

@@ -80,8 +80,6 @@ export type ApiResponse<T> = T | ApiError;
 
 // =============== APP STATE TYPES ===============
 
-export type UserRole = 'owner' | 'guest' | null;
-
 export interface BookingFlowState {
   selectedEventType: EventType | null;
   selectedDate: Date | null;
