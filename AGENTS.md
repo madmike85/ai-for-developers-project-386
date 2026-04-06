@@ -4,7 +4,7 @@
 ## Project Overview
 Call Calendar - Web application for scheduling and managing calls.
 This is a full-stack application with:
-- **Frontend**: ReactJS (Vite) + TypeScript + Tailwind CSS
+- **Frontend**: ReactJS (Vite) + TypeScript + Mantine
 - **Backend**: NestJS + TypeScript
 - **Database**: PostgreSQL (with TypeORM or Prisma)
 - **State Management**: Zustand (frontend)
@@ -12,10 +12,21 @@ This is a full-stack application with:
 ## Development Commands
 
 ### Setup
+
+# Frontend setup (in new terminal)
 ```bash
+cd web
 npm install          # Install dependencies
 npm run dev          # Start dev server
 npm run dev -- --port=3001  # Custom port
+```
+
+# Backend setup
+```bash
+cd api
+npm install          # Install dependencies
+npm run dev          # Start dev server
+npm run dev -- --port=3333  # Custom port
 ```
 
 ### Build
