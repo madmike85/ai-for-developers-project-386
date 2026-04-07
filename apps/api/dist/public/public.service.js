@@ -23,6 +23,12 @@ let PublicService = class PublicService {
         });
     }
     async findAvailableSlots(eventTypeId, date) {
+        if (!eventTypeId) {
+            throw new common_1.BadRequestException('Event type not found');
+        }
+        if (!date) {
+            throw new common_1.BadRequestException('Invalid date format');
+        }
         const eventType = await this.prisma.eventType.findUnique({
             where: { id: eventTypeId },
         });

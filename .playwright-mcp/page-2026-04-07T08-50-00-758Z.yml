@@ -1,0 +1,120 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e6]:
+      - generic [ref=e7] [cursor=pointer]:
+        - img [ref=e8]
+        - paragraph [ref=e10]: Calendar
+      - generic [ref=e11]:
+        - button "Book" [ref=e12] [cursor=pointer]:
+          - generic [ref=e14]: Book
+        - button "Admin" [ref=e15] [cursor=pointer]:
+          - generic [ref=e17]: Admin
+  - main [ref=e18]:
+    - generic [ref=e82]:
+      - button "Back" [ref=e84] [cursor=pointer]:
+        - generic [ref=e85]:
+          - img [ref=e87]
+          - generic [ref=e90]: Back
+      - generic [ref=e91]:
+        - heading "Select a Date" [level=2] [ref=e92]
+        - paragraph [ref=e93]:
+          - text: Choose a date for your
+          - strong [ref=e94]: Consultation
+        - paragraph [ref=e95]: "Duration: 60 minutes"
+      - generic [ref=e97]:
+        - img [ref=e98]
+        - generic [ref=e102]:
+          - generic [ref=e103]:
+            - button [disabled] [ref=e104]:
+              - img [ref=e105]
+            - button "April 2026" [ref=e107] [cursor=pointer]
+            - button [ref=e108] [cursor=pointer]:
+              - img [ref=e109]
+          - table [ref=e111]:
+            - rowgroup [ref=e112]:
+              - row "Mo Tu We Th Fr Sa Su" [ref=e113]:
+                - columnheader "Mo" [ref=e114]
+                - columnheader "Tu" [ref=e115]
+                - columnheader "We" [ref=e116]
+                - columnheader "Th" [ref=e117]
+                - columnheader "Fr" [ref=e118]
+                - columnheader "Sa" [ref=e119]
+                - columnheader "Su" [ref=e120]
+            - rowgroup [ref=e121]:
+              - row "30 March 2026 31 March 2026 1 April 2026 2 April 2026 3 April 2026 4 April 2026 5 April 2026" [ref=e122]:
+                - cell "30 March 2026" [ref=e123]:
+                  - button "30 March 2026" [disabled] [ref=e124]: "30"
+                - cell "31 March 2026" [ref=e125]:
+                  - button "31 March 2026" [disabled] [ref=e126]: "31"
+                - cell "1 April 2026" [ref=e127]:
+                  - button "1 April 2026" [disabled] [ref=e128]: "1"
+                - cell "2 April 2026" [ref=e129]:
+                  - button "2 April 2026" [disabled] [ref=e130]: "2"
+                - cell "3 April 2026" [ref=e131]:
+                  - button "3 April 2026" [disabled] [ref=e132]: "3"
+                - cell "4 April 2026" [ref=e133]:
+                  - button "4 April 2026" [disabled] [ref=e134]: "4"
+                - cell "5 April 2026" [ref=e135]:
+                  - button "5 April 2026" [disabled] [ref=e136]: "5"
+              - row "6 April 2026 7 April 2026 8 April 2026 9 April 2026 10 April 2026 11 April 2026 12 April 2026" [ref=e137]:
+                - cell "6 April 2026" [ref=e138]:
+                  - button "6 April 2026" [disabled] [ref=e139]: "6"
+                - cell "7 April 2026" [ref=e140]:
+                  - button "7 April 2026" [disabled] [ref=e141]: "7"
+                - cell "8 April 2026" [ref=e142]:
+                  - button "8 April 2026" [ref=e143] [cursor=pointer]: "8"
+                - cell "9 April 2026" [ref=e144]:
+                  - button "9 April 2026" [ref=e145] [cursor=pointer]: "9"
+                - cell "10 April 2026" [ref=e146]:
+                  - button "10 April 2026" [ref=e147] [cursor=pointer]: "10"
+                - cell "11 April 2026" [ref=e148]:
+                  - button "11 April 2026" [ref=e149] [cursor=pointer]: "11"
+                - cell "12 April 2026" [ref=e150]:
+                  - button "12 April 2026" [ref=e151] [cursor=pointer]: "12"
+              - row "13 April 2026 14 April 2026 15 April 2026 16 April 2026 17 April 2026 18 April 2026 19 April 2026" [ref=e152]:
+                - cell "13 April 2026" [ref=e153]:
+                  - button "13 April 2026" [ref=e154] [cursor=pointer]: "13"
+                - cell "14 April 2026" [ref=e155]:
+                  - button "14 April 2026" [ref=e156] [cursor=pointer]: "14"
+                - cell "15 April 2026" [ref=e157]:
+                  - button "15 April 2026" [ref=e158] [cursor=pointer]: "15"
+                - cell "16 April 2026" [ref=e159]:
+                  - button "16 April 2026" [ref=e160] [cursor=pointer]: "16"
+                - cell "17 April 2026" [ref=e161]:
+                  - button "17 April 2026" [ref=e162] [cursor=pointer]: "17"
+                - cell "18 April 2026" [ref=e163]:
+                  - button "18 April 2026" [ref=e164] [cursor=pointer]: "18"
+                - cell "19 April 2026" [ref=e165]:
+                  - button "19 April 2026" [ref=e166] [cursor=pointer]: "19"
+              - row "20 April 2026 21 April 2026 22 April 2026 23 April 2026 24 April 2026 25 April 2026 26 April 2026" [ref=e167]:
+                - cell "20 April 2026" [ref=e168]:
+                  - button "20 April 2026" [ref=e169] [cursor=pointer]: "20"
+                - cell "21 April 2026" [ref=e170]:
+                  - button "21 April 2026" [ref=e171] [cursor=pointer]: "21"
+                - cell "22 April 2026" [ref=e172]:
+                  - button "22 April 2026" [ref=e173] [cursor=pointer]: "22"
+                - cell "23 April 2026" [ref=e174]:
+                  - button "23 April 2026" [ref=e175] [cursor=pointer]: "23"
+                - cell "24 April 2026" [ref=e176]:
+                  - button "24 April 2026" [ref=e177] [cursor=pointer]: "24"
+                - cell "25 April 2026" [ref=e178]:
+                  - button "25 April 2026" [ref=e179] [cursor=pointer]: "25"
+                - cell "26 April 2026" [ref=e180]:
+                  - button "26 April 2026" [ref=e181] [cursor=pointer]: "26"
+              - row "27 April 2026 28 April 2026 29 April 2026 30 April 2026 1 May 2026 2 May 2026 3 May 2026" [ref=e182]:
+                - cell "27 April 2026" [ref=e183]:
+                  - button "27 April 2026" [ref=e184] [cursor=pointer]: "27"
+                - cell "28 April 2026" [ref=e185]:
+                  - button "28 April 2026" [ref=e186] [cursor=pointer]: "28"
+                - cell "29 April 2026" [ref=e187]:
+                  - button "29 April 2026" [ref=e188] [cursor=pointer]: "29"
+                - cell "30 April 2026" [ref=e189]:
+                  - button "30 April 2026" [ref=e190] [cursor=pointer]: "30"
+                - cell "1 May 2026" [ref=e191]:
+                  - button "1 May 2026" [ref=e192] [cursor=pointer]: "1"
+                - cell "2 May 2026" [ref=e193]:
+                  - button "2 May 2026" [ref=e194] [cursor=pointer]: "2"
+                - cell "3 May 2026" [ref=e195]:
+                  - button "3 May 2026" [ref=e196] [cursor=pointer]: "3"
+      - button "Continue" [disabled] [ref=e197]:
+        - generic [ref=e199]: Continue

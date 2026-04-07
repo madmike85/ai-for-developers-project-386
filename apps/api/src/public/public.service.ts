@@ -13,6 +13,16 @@ export class PublicService {
   }
 
   async findAvailableSlots(eventTypeId: string, date: string) {
+    // Validate eventTypeId is provided
+    if (!eventTypeId) {
+      throw new BadRequestException('Event type not found');
+    }
+
+    // Validate date is provided
+    if (!date) {
+      throw new BadRequestException('Invalid date format');
+    }
+
     // Validate event type exists
     const eventType = await this.prisma.eventType.findUnique({
       where: { id: eventTypeId },

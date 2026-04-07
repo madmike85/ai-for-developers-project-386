@@ -1,0 +1,36 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e6]:
+      - generic [ref=e7] [cursor=pointer]:
+        - img [ref=e8]
+        - paragraph [ref=e10]: Calendar
+      - generic [ref=e11]:
+        - button "Book" [ref=e12] [cursor=pointer]:
+          - generic [ref=e14]: Book
+        - button "Admin" [ref=e15] [cursor=pointer]:
+          - generic [ref=e17]: Admin
+  - main [ref=e18]:
+    - generic [ref=e21]:
+      - generic [ref=e23]:
+        - generic [ref=e25]: QUICK CALL BOOKING
+        - paragraph [ref=e26]: Calendar
+        - paragraph [ref=e27]: "Book a meeting in a minute: select event type and convenient time."
+        - button "Book" [ref=e28] [cursor=pointer]:
+          - generic [ref=e29]:
+            - generic [ref=e30]: Book
+            - img [ref=e32]
+      - generic [ref=e38]:
+        - paragraph [ref=e39]: Features
+        - list [ref=e40]:
+          - listitem [ref=e41]:
+            - generic [ref=e42]:
+              - img [ref=e45]
+              - generic [ref=e47]: Select event type and convenient time for your meeting.
+          - listitem [ref=e48]:
+            - generic [ref=e49]:
+              - img [ref=e52]
+              - generic [ref=e54]: Quick booking with confirmation and additional notes.
+          - listitem [ref=e55]:
+            - generic [ref=e56]:
+              - img [ref=e59]
+              - generic [ref=e61]: Manage meeting types and view upcoming bookings in admin panel.

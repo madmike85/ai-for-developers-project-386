@@ -1,0 +1,44 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e6]:
+      - generic [ref=e7] [cursor=pointer]:
+        - img [ref=e8]
+        - paragraph [ref=e10]: Calendar
+      - generic [ref=e11]:
+        - button "Book" [ref=e12] [cursor=pointer]:
+          - generic [ref=e14]: Book
+        - button "Admin" [ref=e15] [cursor=pointer]:
+          - generic [ref=e17]: Admin
+  - main [ref=e18]:
+    - generic [ref=e201]:
+      - button "Back" [ref=e203] [cursor=pointer]:
+        - generic [ref=e204]:
+          - img [ref=e206]
+          - generic [ref=e209]: Back
+      - generic [ref=e210]:
+        - heading "Select a Time" [level=2] [ref=e211]
+        - paragraph [ref=e212]:
+          - text: Available slots for
+          - strong [ref=e213]: Apr 15, 2026
+        - paragraph [ref=e214]: Consultation (60 minutes)
+      - generic [ref=e215]:
+        - button "12:00" [ref=e216] [cursor=pointer]:
+          - generic [ref=e218]: 12:00
+        - button "13:00" [ref=e219] [cursor=pointer]:
+          - generic [ref=e221]: 13:00
+        - button "14:00" [ref=e222] [cursor=pointer]:
+          - generic [ref=e224]: 14:00
+        - button "15:00" [ref=e225] [cursor=pointer]:
+          - generic [ref=e227]: 15:00
+        - button "16:00" [ref=e228] [cursor=pointer]:
+          - generic [ref=e230]: 16:00
+        - button "17:00" [ref=e231] [cursor=pointer]:
+          - generic [ref=e233]: 17:00
+        - button "18:00" [ref=e234] [cursor=pointer]:
+          - generic [ref=e236]: 18:00
+        - button "19:00" [ref=e237] [cursor=pointer]:
+          - generic [ref=e239]: 19:00
+        - button "20:00" [ref=e240] [cursor=pointer]:
+          - generic [ref=e242]: 20:00
+      - button "Continue to Booking" [disabled] [ref=e243]:
+        - generic [ref=e245]: Continue to Booking

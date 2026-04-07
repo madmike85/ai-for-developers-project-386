@@ -1,0 +1,68 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e6]:
+      - generic [ref=e7] [cursor=pointer]:
+        - img [ref=e8]
+        - paragraph [ref=e10]: Calendar
+      - generic [ref=e11]:
+        - button "Book" [ref=e12] [cursor=pointer]:
+          - generic [ref=e14]: Book
+        - button "Admin" [ref=e15] [cursor=pointer]:
+          - generic [ref=e17]: Admin
+  - main [ref=e18]:
+    - generic [ref=e20]:
+      - generic [ref=e21]:
+        - heading "Event Types" [level=2] [ref=e22]
+        - button "Add Event Type" [ref=e23] [cursor=pointer]:
+          - generic [ref=e24]:
+            - img [ref=e26]
+            - generic [ref=e27]: Add Event Type
+      - generic [ref=e28]:
+        - generic [ref=e30]:
+          - generic [ref=e31]:
+            - paragraph [ref=e32]: Quick Chat
+            - generic [ref=e33]:
+              - img [ref=e35]
+              - generic [ref=e38]: 15 min
+          - paragraph [ref=e39]: Short 15-minute conversation
+          - generic [ref=e40]:
+            - button "Edit" [ref=e41] [cursor=pointer]:
+              - generic [ref=e42]:
+                - img [ref=e44]
+                - generic [ref=e48]: Edit
+            - button "Delete" [ref=e49] [cursor=pointer]:
+              - generic [ref=e50]:
+                - img [ref=e52]
+                - generic [ref=e55]: Delete
+        - generic [ref=e57]:
+          - generic [ref=e58]:
+            - paragraph [ref=e59]: Consultation
+            - generic [ref=e60]:
+              - img [ref=e62]
+              - generic [ref=e65]: 1 hour
+          - paragraph [ref=e66]: Detailed consultation session
+          - generic [ref=e67]:
+            - button "Edit" [ref=e68] [cursor=pointer]:
+              - generic [ref=e69]:
+                - img [ref=e71]
+                - generic [ref=e75]: Edit
+            - button "Delete" [ref=e76] [cursor=pointer]:
+              - generic [ref=e77]:
+                - img [ref=e79]
+                - generic [ref=e82]: Delete
+        - generic [ref=e84]:
+          - generic [ref=e85]:
+            - paragraph [ref=e86]: Intro Call
+            - generic [ref=e87]:
+              - img [ref=e89]
+              - generic [ref=e92]: 30 min
+          - paragraph [ref=e93]: Initial introduction call to discuss your needs
+          - generic [ref=e94]:
+            - button "Edit" [ref=e95] [cursor=pointer]:
+              - generic [ref=e96]:
+                - img [ref=e98]
+                - generic [ref=e102]: Edit
+            - button "Delete" [ref=e103] [cursor=pointer]:
+              - generic [ref=e104]:
+                - img [ref=e106]
+                - generic [ref=e109]: Delete

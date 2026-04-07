@@ -1,0 +1,15 @@
+{
+  "name": "call-calendar",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Call Calendar - Web application for scheduling and managing calls",
+  "scripts": {
+    "test:api": "cd apps/api && npm run test:e2e",
+    "test:e2e": "cd apps/web && npm run test:e2e",
+    "test:all": "npm run test:api && npm run test:e2e"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}

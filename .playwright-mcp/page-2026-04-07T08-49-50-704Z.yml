@@ -1,0 +1,12 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e6]:
+      - generic [ref=e7] [cursor=pointer]:
+        - img [ref=e8]
+        - paragraph [ref=e10]: Calendar
+      - generic [ref=e11]:
+        - button "Book" [ref=e12] [cursor=pointer]:
+          - generic [ref=e14]: Book
+        - button "Admin" [ref=e15] [cursor=pointer]:
+          - generic [ref=e17]: Admin
+  - main [ref=e18]
