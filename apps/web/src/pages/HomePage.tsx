@@ -71,6 +71,7 @@ export const HomePage = () => {
             </Text>
 
             <Button
+              data-testid="cta-book-button"
               size="lg"
               radius="md"
               rightSection={<IconArrowRight size={20} />}

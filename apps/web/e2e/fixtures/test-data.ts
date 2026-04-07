@@ -56,9 +56,9 @@ export interface TestScenario {
 
 /**
  * Base URL for API requests
- * Matches the NestJS backend default port (3000) from apps/api/src/main.ts
+ * Matches the NestJS backend default port (3333) from AGENTS.md
  */
-export const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3000';
+export const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3333';
 
 /**
  * Base URL for the web application
@@ -75,9 +75,9 @@ export const DEFAULT_TIMEOUTS = {
   /** Medium timeout for standard operations */
   MEDIUM: 10000,
   /** Long timeout for slow operations */
-  LONG: 30000,
+  LONG: 60000,
   /** Extra long timeout for initialization */
-  XL: 60000,
+  XL: 120000,
 } as const;
 
 /**

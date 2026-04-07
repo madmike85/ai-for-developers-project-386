@@ -4,10 +4,10 @@ export declare class PublicService {
     private readonly prisma;
     constructor(prisma: PrismaService);
     findAllEventTypes(): Promise<{
-        id: string;
-        name: string;
         description: string | null;
+        name: string;
         durationMinutes: number;
+        id: string;
         createdAt: Date;
         updatedAt: Date;
     }[]>;
@@ -18,10 +18,10 @@ export declare class PublicService {
     }[]>;
     createBooking(data: CreateBookingDto): Promise<{
         eventType: {
-            id: string;
-            name: string;
             description: string | null;
+            name: string;
             durationMinutes: number;
+            id: string;
             createdAt: Date;
             updatedAt: Date;
         };

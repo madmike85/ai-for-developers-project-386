@@ -4,10 +4,10 @@ export declare class PublicController {
     private readonly publicService;
     constructor(publicService: PublicService);
     findAllEventTypes(): Promise<{
-        id: string;
-        name: string;
         description: string | null;
+        name: string;
         durationMinutes: number;
+        id: string;
         createdAt: Date;
         updatedAt: Date;
     }[]>;
@@ -18,10 +18,10 @@ export declare class PublicController {
     }[]>;
     createBooking(data: CreateBookingDto): Promise<{
         eventType: {
-            id: string;
-            name: string;
             description: string | null;
+            name: string;
             durationMinutes: number;
+            id: string;
             createdAt: Date;
             updatedAt: Date;
         };
