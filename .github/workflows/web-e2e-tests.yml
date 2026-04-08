@@ -10,9 +10,6 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: apps/web
 
     steps:
       - name: Checkout repository
@@ -25,16 +22,22 @@ jobs:
           cache: 'npm'
           cache-dependency-path: 'package-lock.json'
 
-      - name: clear node_modules
-        run: rm -rf node_modules package-lock.json
+      - name: Clear node_modules and lock
+        run: |
+          rm -rf node_modules package-lock.json
+          rm -rf apps/web/node_modules
+          rm -rf apps/api/node_modules
+          rm -rf packages/db/node_modules
 
-      - name: Install dependencies
+      - name: Install dependencies (root workspace)
         run: npm install
 
       - name: Install Playwright browsers
+        working-directory: apps/web
         run: npx playwright install chromium
 
       - name: Run Playwright tests on Chromium
+        working-directory: apps/web
         run: npx playwright test --project=chromium
 
       - name: Upload test results
