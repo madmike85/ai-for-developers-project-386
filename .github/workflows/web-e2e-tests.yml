@@ -65,7 +65,7 @@ jobs:
 
       - name: Seed Database
         working-directory: packages/db
-        run: prisma db seed
+        run: npx tsx prisma/seed.ts
 
       - name: Start Backend API
         working-directory: apps/api
