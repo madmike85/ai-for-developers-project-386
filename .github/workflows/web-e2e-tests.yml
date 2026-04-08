@@ -11,6 +11,28 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_DB: call_calendar
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/call_calendar?schema=public
+      PORT: 3333
+      FRONTEND_URL: http://localhost:5173
+      API_BASE_URL: http://localhost:3333
+      WEB_BASE_URL: http://localhost:5173
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -32,12 +54,28 @@ jobs:
       - name: Install dependencies (root workspace)
         run: npm install
 
+      - name: Setup Database
+        working-directory: packages/db
+        run: |
+          npx prisma generate
+          npx prisma db push --accept-data-loss
+          npx prisma db seed
+
+      - name: Start Backend API
+        working-directory: apps/api
+        run: |
+          npm run start:dev &
+          npx wait-on http://localhost:3333/api/docs --timeout 60000
+
       - name: Install Playwright browsers
         working-directory: apps/web
         run: npx playwright install chromium
 
       - name: Run Playwright tests on Chromium
         working-directory: apps/web
+        env:
+          VITE_USE_MOCK_API: false
+          VITE_API_URL: http://localhost:3333
         run: npx playwright test --project=chromium
 
       - name: Upload test results
