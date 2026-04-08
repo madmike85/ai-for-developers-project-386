@@ -54,15 +54,18 @@ jobs:
       - name: Install dependencies (root workspace)
         run: npm install
 
+      - name: Install Prisma CLI 5.22.0
+        run: npm install -g prisma@5.22.0
+
       - name: Generate Prisma Client
-        run: npx prisma generate --schema=packages/db/prisma/schema.prisma
+        run: prisma generate --schema=packages/db/prisma/schema.prisma
 
       - name: Push Database Schema
-        run: npx prisma db push --schema=packages/db/prisma/schema.prisma --accept-data-loss
+        run: prisma db push --schema=packages/db/prisma/schema.prisma --accept-data-loss
 
       - name: Seed Database
         working-directory: packages/db
-        run: npx prisma db seed
+        run: prisma db seed
 
       - name: Start Backend API
         working-directory: apps/api
