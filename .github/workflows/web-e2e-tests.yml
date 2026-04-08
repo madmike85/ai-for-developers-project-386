@@ -58,6 +58,10 @@ jobs:
         working-directory: packages/db
         run: npm install
 
+      - name: Install @prisma/client in packages/db
+        working-directory: packages/db
+        run: npm install @prisma/client
+
       - name: Generate Prisma Client
         working-directory: packages/db
         run: npm run db:generate
