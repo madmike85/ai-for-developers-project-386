@@ -54,21 +54,11 @@ jobs:
       - name: Install dependencies (root workspace)
         run: npm install
 
-      - name: Install dependencies (packages/db)
-        working-directory: packages/db
-        run: npm install
-
-      - name: Install @prisma/client in packages/db
-        working-directory: packages/db
-        run: npm install @prisma/client
-
       - name: Generate Prisma Client
-        working-directory: packages/db
-        run: npm run db:generate
+        run: npx prisma generate --schema=packages/db/prisma/schema.prisma
 
       - name: Push Database Schema
-        working-directory: packages/db
-        run: npx prisma db push --accept-data-loss
+        run: npx prisma db push --schema=packages/db/prisma/schema.prisma --accept-data-loss
 
       - name: Seed Database
         working-directory: packages/db
