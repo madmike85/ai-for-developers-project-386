@@ -22,7 +22,7 @@ export const HomePage = () => {
         background: 'linear-gradient(135deg, #dbeafe 0%, #eff6ff 30%, #fff7ed 70%, #fff 100%)',
       }}
     >
-      <Grid gutter={0} style={{ minHeight: 'calc(100vh - 60px)' }}>
+      <Grid style={{ minHeight: 'calc(100vh - 60px)' }}>
         <Grid.Col span={{ base: 12, md: 6 }}>
           <Stack
             justify="center"

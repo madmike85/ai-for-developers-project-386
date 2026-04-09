@@ -13,6 +13,7 @@ const prisma_module_1 = require("./prisma/prisma.module");
 const event_types_module_1 = require("./event-types/event-types.module");
 const bookings_module_1 = require("./bookings/bookings.module");
 const public_module_1 = require("./public/public.module");
+const health_controller_1 = require("./health/health.controller");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -27,6 +28,7 @@ exports.AppModule = AppModule = __decorate([
             bookings_module_1.BookingsModule,
             public_module_1.PublicModule,
         ],
+        controllers: [health_controller_1.HealthController],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map
