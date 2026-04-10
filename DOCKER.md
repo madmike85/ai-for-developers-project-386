@@ -329,3 +329,226 @@ Then restart the API container:
 ```bash
 docker-compose -f docker-compose.prod.yml up -d api
 ```
+
+---
+
+# Unified Production Dockerfile (Single Container)
+
+## Overview
+
+For simple deployments (e.g., Render, Railway, single VPS), use the unified `Dockerfile` in the project root. This single container includes:
+
+- **Frontend**: Built React app served as static files
+- **API**: Compiled NestJS backend
+- **Prisma**: Database migrations run on startup
+- **Serve Static**: Frontend served by NestJS via `@nestjs/serve-static`
+
+## Architecture
+
+```
+┌───────────────────────────────────────────────────────────────┐
+│                    Unified Container                           │
+│  ┌─────────────────────────────────────────────────────────┐  │
+│  │  NestJS API + Static Frontend (via @nestjs/serve-static)│  │
+│  │  Port: ${PORT:-3000} (configurable)                     │  │
+│  │                                                         │  │
+│  │  • /api/*      → API endpoints                          │  │
+│  │  • /health     → Health check                           │  │
+│  │  • /api/docs   → Swagger documentation                  │  │
+│  │  • /*          → React SPA (serves index.html)         │  │
+│  └─────────────────────────────────────────────────────────┘  │
+└───────────────────────────────────────────────────────────────┘
+```
+
+## Build
+
+```bash
+# Build the image
+docker build -t call-calendar .
+
+# Build with custom tag
+docker build -t call-calendar:v1.0.0 .
+```
+
+## Run
+
+### Basic (with default port 3000)
+```bash
+docker run -d \
+  -p 3000:3000 \
+  -e DATABASE_URL="postgresql://postgres:password@db:5432/call_calendar" \
+  --name call-calendar \
+  call-calendar
+```
+
+### With custom port
+```bash
+docker run -d \
+  -p 8080:8080 \
+  -e PORT=8080 \
+  -e DATABASE_URL="postgresql://postgres:password@db:5432/call_calendar" \
+  --name call-calendar \
+  call-calendar
+```
+
+### Full example with all environment variables
+```bash
+docker run -d \
+  -p 3000:3000 \
+  -e PORT=3000 \
+  -e DATABASE_URL="postgresql://postgres:password@db:5432/call_calendar" \
+  -e FRONTEND_URL="http://localhost:3000" \
+  -e NODE_ENV="production" \
+  --name call-calendar \
+  call-calendar
+```
+
+## Environment Variables
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `PORT` | No | 3000 | Server port (configurable) |
+| `DATABASE_URL` | **Yes** | - | PostgreSQL connection string |
+| `FRONTEND_URL` | No | http://localhost:5173 | CORS origin for frontend |
+| `NODE_ENV` | No | production | Environment mode |
+
+## Health Check
+
+The container includes a health check that pings `/health` every 30 seconds:
+
+```bash
+# Check health status
+docker ps
+
+# View health check logs
+docker inspect --format='{{.State.Health.Status}}' call-calendar
+```
+
+## URLs
+
+When running on port 3000:
+
+| URL | Description |
+|-----|-------------|
+| http://localhost:3000 | React frontend (SPA) |
+| http://localhost:3000/api | API base path |
+| http://localhost:3000/api/docs | Swagger documentation |
+| http://localhost:3000/health | Health check endpoint |
+
+## Cloud Deployment
+
+### Render
+
+Use the included `render.yaml` or deploy the Dockerfile directly:
+
+```yaml
+# render.yaml
+services:
+  - type: web
+    name: call-calendar
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: DATABASE_URL
+        fromDatabase:
+          name: postgres
+          property: connectionString
+```
+
+### Railway
+
+1. Connect your GitHub repo to Railway
+2. Railway auto-detects the Dockerfile
+3. Set `DATABASE_URL` environment variable
+
+### Docker Compose (Single Container)
+
+```yaml
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "${PORT:-3000}:${PORT:-3000}"
+    environment:
+      - PORT=${PORT:-3000}
+      - DATABASE_URL=${DATABASE_URL}
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:3000}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: always
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: call_calendar
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d call_calendar"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+volumes:
+  postgres_data:
+```
+
+## Troubleshooting
+
+### Container exits immediately
+
+```bash
+# Check logs
+docker logs call-calendar
+
+# Most likely: DATABASE_URL is not set or invalid
+```
+
+### Database connection errors
+
+Ensure `DATABASE_URL` includes the correct host (use service name in Docker network):
+
+```
+# For Docker Compose:
+postgresql://postgres:password@postgres:5432/call_calendar
+
+# For external database:
+postgresql://postgres:password@your-db-host.com:5432/call_calendar
+```
+
+### Frontend shows 404 on page refresh
+
+This is expected behavior for SPAs. The unified Dockerfile uses `@nestjs/serve-static` with SPA routing support. If you see 404s:
+
+```bash
+# Check that index.html exists in container
+docker exec call-calendar ls -la /app/apps/api/public/
+```
+
+### Image size
+
+The unified image is ~700MB (includes Node.js runtime, built frontend, and API). To reduce size:
+
+```bash
+# Multi-stage build already optimizes this
+# For further reduction, use docker-slim or distroless base images
+```
+
+## Comparison: Unified vs Separate Containers
+
+| Feature | Unified Dockerfile | Docker Compose (Separate) |
+|---------|-------------------|-------------------------|
+| **Complexity** | Simple, one container | Multiple services |
+| **Best for** | Single server/cloud platforms | Local development, Kubernetes |
+| **Portability** | Single image to deploy | Compose file + multiple images |
+| **Scaling** | Scale entire app together | Scale services independently |
+| **Hot reload** | ❌ Production build only | ✅ Dev: API/Web hot reload |
+| **Port config** | Single `PORT` env var | Separate ports for each service |
+| **Ideal use** | Render, Railway, VPS | Development, complex deployments |
