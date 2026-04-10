@@ -1,14 +1,15 @@
 # render.yaml - Render.com Blueprint for Call Calendar
 # This file defines the infrastructure for deploying the full-stack application
 
-services:
-  # PostgreSQL Database (Free tier)
-  # Automatically provisioned and managed by Render
-  - type: postgres
-    name: call-calendar-db
+# PostgreSQL Database (Free tier)
+# Must be in separate 'databases' section, not 'services'
+databases:
+  - name: call-calendar-db
     plan: free
     ipAllowList: []  # Allow all (adjust for production security)
 
+# Services - only web and static types
+services:
   # Backend API (NestJS + Prisma)
   # Handles API requests and database operations
   - type: web
