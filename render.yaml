@@ -1,14 +1,13 @@
-# render.yaml - Render.com Blueprint for Call Calendar
-# This file defines the infrastructure for deploying the full-stack application
+# render.yaml - Render.com Blueprint for Call Calendar (Backend + Database only)
+# Frontend will be deployed separately as a Static Site after API is deployed
 
 # PostgreSQL Database (Free tier)
-# Must be in separate 'databases' section, not 'services'
 databases:
   - name: call-calendar-db
     plan: free
     ipAllowList: []  # Allow all (adjust for production security)
 
-# Services - only web and static types
+# Services - Backend API only
 services:
   # Backend API (NestJS + Prisma)
   # Handles API requests and database operations
@@ -42,28 +41,3 @@ services:
         value: "*"
     # Health check path for monitoring (uses /health endpoint)
     healthCheckPath: /health
-
-  # Frontend (Static Site)
-  # React + Vite SPA served as static files
-  - type: static
-    name: call-calendar-web
-    plan: free
-    branch: main
-    # Build command - install deps and build Vite app
-    buildCommand: |
-      npm install
-      npm install -g typescript
-      cd apps/web && npm run build
-    # Directory containing built static files
-    staticPublishPath: apps/web/dist
-    # Environment variables for build-time
-    envVars:
-      - key: VITE_API_URL
-        value: https://call-calendar-api.onrender.com
-      - key: VITE_USE_MOCK_API
-        value: "false"
-    # Routes for SPA - all routes serve index.html
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
