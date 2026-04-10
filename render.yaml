@@ -17,11 +17,7 @@ services:
     plan: free
     branch: main
     # Build commands - install deps, generate Prisma client, compile TypeScript
-    buildCommand: |
-      npm install
-      npm install -g prisma@5.22.0 typescript
-      npx prisma generate --schema=packages/db/prisma/schema.prisma
-      cd apps/api && npm run build
+    buildCommand: npm run build
     # Start command - run migrations then start server
     startCommand: |
       npx prisma migrate deploy --schema=packages/db/prisma/schema.prisma
