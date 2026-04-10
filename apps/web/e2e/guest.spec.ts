@@ -82,17 +82,18 @@ async function resetBookingState(page: Page): Promise<void> {
 
 /**
  * Helper to select a date in the Mantine DatePicker
- * Uses button text to find and click the specific date
+ * Uses aria-label to find and click the specific date
  */
 async function selectDateInCalendar(
   page: Page,
   date: Date,
 ): Promise<void> {
   const day = date.getDate();
-  
-  // Find the date button by its text (e.g., "10" for the 10th)
-  // Use first() in case there are multiple months visible
-  const dateButton = page.getByRole('button', { name: String(day) }).first();
+  const monthYear = date.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+
+  // Find the date button by its aria-label (e.g., "30 April 2026")
+  // This ensures we select the correct date even when multiple months are visible
+  const dateButton = page.getByRole('button', { name: `${day} ${monthYear}` });
   await expect(dateButton).toBeVisible();
   await dateButton.click();
 }
