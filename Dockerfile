@@ -14,8 +14,15 @@ COPY apps/web/package*.json ./apps/web/
 RUN npm install
 
 # Install platform-specific native bindings required by Vite 8
-# These are needed for ARM64 Linux builds in Docker
-RUN cd apps/web && npm install @rolldown/binding-linux-arm64-gnu lightningcss-linux-arm64-gnu
+# Automatically detect architecture and install correct packages
+ARG TARGETARCH
+RUN if [ "$TARGETARCH" = "arm64" ]; then \
+        cd apps/web && npm install @rolldown/binding-linux-arm64-gnu lightningcss-linux-arm64-gnu; \
+    elif [ "$TARGETARCH" = "amd64" ]; then \
+        cd apps/web && npm install @rolldown/binding-linux-x64-gnu lightningcss-linux-x64-gnu; \
+    else \
+        echo "Unknown architecture: $TARGETARCH, skipping platform-specific packages"; \
+    fi
 
 # Copy web source code
 COPY apps/web/src ./apps/web/src/
