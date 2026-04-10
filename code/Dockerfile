@@ -64,6 +64,15 @@ FROM deps AS web-build
 
 WORKDIR /app
 
+# Install platform-specific native bindings required by Vite 8
+RUN apk add --no-cache python3 make g++ && \
+    ARCH=$(uname -m) && \
+    if [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then \
+        cd apps/web && npm install @rolldown/binding-linux-arm64-musl lightningcss-linux-arm64-musl; \
+    elif [ "$ARCH" = "x86_64" ] || [ "$ARCH" = "amd64" ]; then \
+        cd apps/web && npm install @rolldown/binding-linux-x64-musl lightningcss-linux-x64-musl; \
+    fi
+
 # Copy web source code
 COPY apps/web/src ./apps/web/src/
 COPY apps/web/public ./apps/web/public/
