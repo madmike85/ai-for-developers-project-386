@@ -39,8 +39,8 @@ services:
       # CORS - wildcard for simple setup (can restrict to specific URL later)
       - key: FRONTEND_URL
         value: "*"
-    # Health check path for monitoring
-    healthCheckPath: /
+    # Health check path for monitoring (uses /health endpoint)
+    healthCheckPath: /health
 
   # Frontend (Static Site)
   # React + Vite SPA served as static files
