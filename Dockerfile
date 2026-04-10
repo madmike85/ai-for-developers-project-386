@@ -33,7 +33,7 @@ COPY apps/web/tsconfig*.json ./apps/web/
 COPY apps/web/eslint.config.js ./apps/web/
 
 # Build the frontend (outputs to apps/web/dist)
-RUN npm run build --workspace=web
+RUN cd apps/web && npm run build
 
 # Stage 2: Build API (NestJS + Prisma)
 FROM node:20-slim AS api-builder
