@@ -32,8 +32,14 @@ COPY apps/web/vite.config.ts ./apps/web/
 COPY apps/web/tsconfig*.json ./apps/web/
 COPY apps/web/eslint.config.js ./apps/web/
 
+# Verify source files are copied
+RUN ls -la apps/web/ && ls -la apps/web/src/ | head -5
+
 # Build the frontend (outputs to apps/web/dist)
-RUN cd apps/web && npm run build
+RUN cd apps/web && npm run build 2>&1 || (echo "BUILD FAILED" && exit 1)
+
+# Verify dist was created
+RUN ls -la apps/web/dist/ || (echo "DIST NOT CREATED" && exit 1)
 
 # Stage 2: Build API (NestJS + Prisma)
 FROM node:20-slim AS api-builder
