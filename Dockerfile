@@ -55,7 +55,7 @@ FROM node:20-slim AS api-builder
 WORKDIR /app
 
 # Install OpenSSL and other dependencies for Prisma
-RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y openssl wget && rm -rf /var/lib/apt/lists/*
 
 # Copy root package files
 COPY package*.json ./
@@ -87,19 +87,9 @@ COPY apps/api/src ./apps/api/src/
 RUN cd apps/api && npm run build
 
 # Stage 3: Production Image
-FROM node:20-slim
+FROM api-builder AS production
 
 WORKDIR /app
-
-# Install OpenSSL for Prisma and wget for health check
-RUN apt-get update && apt-get install -y openssl wget && rm -rf /var/lib/apt/lists/*
-
-# Copy production files from builders
-COPY --from=api-builder /app/node_modules ./node_modules
-COPY --from=api-builder /app/apps/api/dist ./apps/api/dist
-COPY --from=api-builder /app/apps/api/package.json ./apps/api/
-COPY --from=api-builder /app/packages/db ./packages/db/
-COPY --from=api-builder /app/packages/db/node_modules ./packages/db/node_modules
 
 # Copy built frontend files to API's public directory
 COPY --from=web-builder /app/apps/web/dist ./apps/api/public/
