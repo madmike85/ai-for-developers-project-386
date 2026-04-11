@@ -11,6 +11,15 @@ All services include health checks for proper startup order and monitoring.
 
 ## Quick Start
 
+### Hexlet Project Check
+
+The project is configured for Hexlet's automated testing system. For local development:
+
+```bash
+# Start development services (3 separate containers: api, web, postgres)
+docker compose -f docker-compose.dev.yml up --build
+```
+
 ### First Time Setup
 
 ```bash
@@ -122,6 +131,8 @@ npm run docker:up:build
 
 ## Architecture
 
+### Development (docker-compose.dev.yml)
+
 ```
 ┌─────────────────┐         ┌─────────────────┐         ┌─────────────────┐
 │      Web        │────────▶│       API       │────────▶│    PostgreSQL   │
@@ -133,6 +144,37 @@ npm run docker:up:build
        └───────────────────────────┴───────────────────────────┘
                            Docker Network
 ```
+
+### Hexlet Testing (docker-compose.yml)
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        Unified Container                         │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │   Call Calendar App (Unified Dockerfile)               │   │
+│  │   - NestJS API with Static Frontend                    │   │
+│  │   - Built-in PostgreSQL                               │   │
+│  │   - Port: 3000                                         │   │
+│  │   - Health Check: /health                              │   │
+│  └─────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+                    ┌─────────────────┐
+                    │    PostgreSQL   │
+                    │   (Port 5432)   │
+                    │   Health Check  │
+                    └─────────────────┘
+```
+
+**Files for Hexlet:**
+- `docker-compose.yml` — Contains service `app` for Hexlet testing
+- `Dockerfile` — Unified production build (root level)
+- `Makefile` — Contains `setup` target for Hexlet
+
+**Files for Local Development:**
+- `docker-compose.dev.yml` — Development with separate services (api, web, postgres)
+- Individual Dockerfiles in `apps/api/Dockerfile` and `apps/web/Dockerfile`
 
 ## Health Check Strategy
 
