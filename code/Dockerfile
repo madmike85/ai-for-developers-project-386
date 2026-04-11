@@ -152,7 +152,7 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 EXPOSE 8080
 
 # Health check - hardcoded port 8080 for reliability
-HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=5 \
+HEALTHCHECK --interval=5s --timeout=5s --start-period=120s --retries=10 \
     CMD wget --quiet --tries=1 --spider http://localhost:8080/health || exit 1
 
 # Entrypoint
