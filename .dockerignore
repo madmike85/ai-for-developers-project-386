@@ -1,12 +1,10 @@
-# Dependencies - comprehensive exclusion
+# Dependencies
 node_modules
 **/node_modules
-*/*/node_modules
-*/*/*/node_modules
 package-lock.json
 **/package-lock.json
 
-# Build outputs - comprehensive
+# Build outputs
 dist
 **/dist
 build
@@ -34,15 +32,13 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
-# Testing - comprehensive exclusion
+# Testing
 coverage
 .nyc_output
 test-results
 playwright-report
 e2e
 test
-tests
-**/__tests__
 **/*.test.ts
 **/*.spec.ts
 **/*.e2e-spec.ts
@@ -60,7 +56,7 @@ Dockerfile*
 docker-compose*.yml
 .dockerignore
 
-# Git and GitHub
+# Git
 .git
 .gitignore
 .github
@@ -80,11 +76,3 @@ temp
 # Playwright
 playwright/.cache/
 playwright/.auth/
-
-# Makefile (not needed in image)
-Makefile
-**/Makefile
-
-# CI/CD configs
-.github
-**/.github
