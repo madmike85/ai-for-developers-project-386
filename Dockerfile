@@ -150,9 +150,5 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 # Expose port (will use PORT environment variable at runtime)
 EXPOSE 3000
 
-# Health check - uses PORT environment variable
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD sh -c 'wget --quiet --tries=1 --spider http://localhost:$${PORT:-3000}/health || exit 1'
-
 # Entrypoint
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
