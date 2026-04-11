@@ -1,6 +1,7 @@
 # Multi-stage Dockerfile for Call Calendar Application
 # Includes PostgreSQL, NestJS API, and React Web frontend
 # All services run in a single container
+# Cache buster: 2026-04-11 - HEALTHCHECK port 8080 fix
 
 # Stage 1: Dependencies installation
 FROM node:20-alpine AS deps
