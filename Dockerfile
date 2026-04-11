@@ -46,6 +46,9 @@ RUN cd apps/web && \
     echo "Build completed, checking dist..." && \
     ls -la dist/ || (echo "ERROR: dist directory not created!" && exit 1)
 
+# Ensure dist layer is properly exported (create marker file to force layer creation)
+RUN touch /app/apps/web/dist/.build-complete && ls -la /app/apps/web/dist/
+
 # Stage 2: Build API (NestJS + Prisma)
 FROM node:20-slim AS api-builder
 
