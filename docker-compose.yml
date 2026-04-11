@@ -10,8 +10,9 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=call_calendar
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/call_calendar?schema=public
+      # PORT from environment variable (Hexlet sets this, defaults to 3000)
+      - PORT=${PORT:-3000}
       - FRONTEND_URL=http://localhost:${PORT:-3000}
-      # PORT is passed from Hexlet (defaults to 3000)
       - NODE_ENV=production
       - PGDATA=/var/lib/postgresql/data
     ports:
