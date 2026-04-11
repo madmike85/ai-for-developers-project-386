@@ -43,6 +43,10 @@ if ! psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "SELECT 1" > /dev/null 2>&1; 
     createdb -U "$POSTGRES_USER" "$POSTGRES_DB"
 fi
 
+# Set postgres user password for md5 authentication
+echo "Setting postgres user password..."
+psql -U "$POSTGRES_USER" -c "ALTER USER $POSTGRES_USER WITH PASSWORD '$POSTGRES_PASSWORD';" > /dev/null 2>&1 || true
+
 # Run Prisma migrations
 echo "Running database migrations..."
 cd /app/packages/db
