@@ -1,30 +1,37 @@
 # Unified Production Dockerfile for Call Calendar
-# Builds both frontend (React) and backend (NestJS) into a single container
+# All-in-one container with PostgreSQL + NestJS API + React Web frontend
+# Based on code/Dockerfile structure
 
-# Stage 1: Build Web (React + Vite)
-FROM node:20-slim AS web-builder
-
-# Invalidate cache to ensure fresh build
-ARG CACHE_BUST=1
+# Stage 1: Dependencies installation
+FROM node:20-alpine AS deps
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
-COPY apps/web/package*.json ./apps/web/
+# Install build dependencies
+RUN apk add --no-cache openssl
 
-# Install dependencies with verbose output
+# Copy package files
+COPY package.json ./
+COPY apps/api/package.json ./apps/api/
+COPY apps/web/package.json ./apps/web/
+COPY packages/db/package.json ./packages/db/
+COPY packages/db/tsconfig.json ./packages/db/
+
+# Install root dependencies
 RUN npm install
 
+# Stage 2: Build Web (React + Vite)
+FROM deps AS web-builder
+
+WORKDIR /app
+
 # Install platform-specific native bindings required by Vite 8
-RUN ARCH=$(uname -m) && \
-    echo "Architecture: $ARCH" && \
+RUN apk add --no-cache python3 make g++ && \
+    ARCH=$(uname -m) && \
     if [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then \
-        cd apps/web && npm install @rolldown/binding-linux-arm64-gnu lightningcss-linux-arm64-gnu; \
+        cd apps/web && npm install @rolldown/binding-linux-arm64-musl lightningcss-linux-arm64-musl; \
     elif [ "$ARCH" = "x86_64" ] || [ "$ARCH" = "amd64" ]; then \
-        cd apps/web && npm install @rolldown/binding-linux-x64-gnu lightningcss-linux-x64-gnu; \
-    else \
-        echo "Unknown architecture: $ARCH, skipping platform-specific packages"; \
+        cd apps/web && npm install @rolldown/binding-linux-x64-musl lightningcss-linux-x64-musl; \
     fi
 
 # Copy web source code
@@ -35,80 +42,109 @@ COPY apps/web/vite.config.ts ./apps/web/
 COPY apps/web/tsconfig*.json ./apps/web/
 COPY apps/web/eslint.config.js ./apps/web/
 
-# Debug: Show copied files
-RUN echo "=== Contents of apps/web/ ===" && ls -la apps/web/ && \
-    echo "=== Contents of apps/web/src/ ===" && ls -la apps/web/src/ | head -10
+# Build web application (production)
+ENV VITE_API_URL=http://localhost:3000
+ENV VITE_USE_MOCK_API=false
+RUN cd apps/web && npm run build
 
-# Build the frontend with explicit error handling
-RUN cd apps/web && \
-    echo "Starting build..." && \
-    npm run build 2>&1 && \
-    echo "Build completed, checking dist..." && \
-    ls -la dist/ || (echo "ERROR: dist directory not created!" && exit 1)
-
-# Ensure dist layer is properly exported (create marker file to force layer creation)
+# Ensure dist layer is properly exported
 RUN touch /app/apps/web/dist/.build-complete && ls -la /app/apps/web/dist/
 
-# Stage 2: Build API (NestJS + Prisma)
-FROM node:20-slim AS api-builder
+# Stage 3: Build packages/db
+FROM deps AS db-build
 
 WORKDIR /app
 
-# Install OpenSSL and other dependencies for Prisma
-RUN apt-get update && apt-get install -y openssl wget && rm -rf /var/lib/apt/lists/*
-
-# Copy root package files
-COPY package*.json ./
-
-# Copy workspace package files
-COPY apps/api/package*.json ./apps/api/
-COPY apps/api/tsconfig*.json ./apps/api/
-COPY apps/api/nest-cli.json ./apps/api/
-COPY packages/db/package*.json ./packages/db/
-COPY packages/db/tsconfig.json ./packages/db/
-
-# Install dependencies
-RUN npm install
-
-# Install Prisma in packages/db
-RUN cd packages/db && npm install @prisma/client prisma
+# Install Prisma globally
+RUN npm install -g prisma@5.22.0
 
 # Copy Prisma schema and source
 COPY packages/db/prisma ./packages/db/prisma/
 COPY packages/db/src ./packages/db/src/
 
-# Generate Prisma client and build packages/db
-RUN cd packages/db && npx prisma generate && npm run build
+# Generate Prisma client
+RUN cd packages/db && npx prisma generate
+
+# Build packages/db
+RUN cd packages/db && npm run build
+
+# Stage 4: Build API
+FROM db-build AS api-builder
+
+WORKDIR /app
+
+# Install NestJS CLI and TypeScript globally
+RUN npm install -g @nestjs/cli typescript
 
 # Copy API source code
 COPY apps/api/src ./apps/api/src/
+COPY apps/api/tsconfig*.json ./apps/api/
+COPY apps/api/nest-cli.json ./apps/api/
 
 # Build API
 RUN cd apps/api && npm run build
 
-# Stage 3: Production Image
-FROM api-builder AS production
+# Stage 5: Runtime with PostgreSQL and Node.js
+FROM postgres:15-alpine AS runtime
 
 WORKDIR /app
 
-# Copy built frontend files to API's public directory
-COPY --from=web-builder /app/apps/web/dist ./apps/api/public/
+# Install Node.js 20 in the PostgreSQL image
+RUN apk add --no-cache nodejs npm wget openssl
 
-# Create non-root user for security
-RUN groupadd -r nodejs && useradd -r -g nodejs nodejs
+# Create postgres data directory and set permissions
+RUN mkdir -p /var/lib/postgresql/data && chown -R postgres:postgres /var/lib/postgresql/data
 
-# Change ownership to non-root user
-RUN chown -R nodejs:nodejs /app
+# Create app directory and set permissions
+RUN mkdir -p /app && chown -R postgres:postgres /app
 
-# Switch to non-root user
-USER nodejs
+# Switch to postgres user for subsequent operations
+USER postgres
 
-# Expose port (configurable via PORT environment variable)
-EXPOSE ${PORT:-3000}
+# Set environment variables
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_PASSWORD=postgres
+ENV POSTGRES_DB=call_calendar
+ENV DATABASE_URL=postgresql://postgres:postgres@localhost:5432/call_calendar?schema=public
+ENV FRONTEND_URL=http://localhost:3000
+ENV PORT=3000
+ENV NODE_ENV=production
+ENV PGDATA=/var/lib/postgresql/data
+
+# Copy node_modules from builder
+COPY --from=deps --chown=postgres:postgres /app/node_modules ./node_modules
+COPY --from=deps --chown=postgres:postgres /app/apps/api/node_modules ./apps/api/node_modules
+COPY --from=deps --chown=postgres:postgres /app/apps/web/node_modules ./apps/web/node_modules
+COPY --from=deps --chown=postgres:postgres /app/packages/db/node_modules ./packages/db/node_modules
+
+# Copy package.json files
+COPY --chown=postgres:postgres package.json ./
+COPY --chown=postgres:postgres apps/api/package.json ./apps/api/
+COPY --chown=postgres:postgres apps/web/package.json ./apps/web/
+COPY --chown=postgres:postgres packages/db/package.json ./packages/db/
+COPY --chown=postgres:postgres packages/db/tsconfig.json ./packages/db/
+
+# Copy Prisma files
+COPY --from=db-build --chown=postgres:postgres /app/packages/db/prisma ./packages/db/prisma/
+COPY --from=db-build --chown=postgres:postgres /app/packages/db/dist ./packages/db/dist/
+COPY --from=db-build --chown=postgres:postgres /app/packages/db/src ./packages/db/src/
+
+# Copy built API
+COPY --from=api-builder --chown=postgres:postgres /app/apps/api/dist ./apps/api/dist/
+
+# Copy built Web files (static assets to be served by API)
+COPY --from=web-builder --chown=postgres:postgres /app/apps/web/dist ./apps/web/dist/
+
+# Copy entrypoint script
+COPY --chown=postgres:postgres docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Expose port 3000 (API serves both API and static web files)
+EXPOSE 3000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD wget --quiet --tries=1 --spider http://localhost:${PORT:-3000}/health || exit 1
+    CMD wget --quiet --tries=1 --spider http://localhost:3000/health || exit 1
 
-# Start application with database migrations
-CMD ["sh", "-c", "npx prisma migrate deploy --schema=./packages/db/prisma/schema.prisma && node apps/api/dist/main"]
+# Entrypoint
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
