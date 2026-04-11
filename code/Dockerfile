@@ -85,7 +85,7 @@ COPY apps/web/tsconfig*.json ./apps/web/
 COPY apps/web/eslint.config.js ./apps/web/
 
 # Build web application (production)
-ENV VITE_API_URL=http://localhost:3000
+ENV VITE_API_URL=http://localhost:8080
 ENV VITE_USE_MOCK_API=false
 RUN cd apps/web && npm run build
 
@@ -114,8 +114,8 @@ ENV POSTGRES_USER=postgres
 ENV POSTGRES_PASSWORD=postgres
 ENV POSTGRES_DB=call_calendar
 ENV DATABASE_URL=postgresql://postgres:postgres@localhost:5432/call_calendar?schema=public
-ENV FRONTEND_URL=http://localhost:3000
-ENV PORT=3000
+ENV FRONTEND_URL=http://localhost:8080
+ENV PORT=8080
 ENV NODE_ENV=production
 ENV PGDATA=/var/lib/postgresql/data
 
@@ -148,11 +148,11 @@ COPY --chown=postgres:postgres docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Expose port (will use PORT environment variable at runtime)
-EXPOSE 3000
+EXPOSE 8080
 
-# Health check - uses PORT environment variable
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD sh -c 'wget --quiet --tries=1 --spider http://localhost:$${PORT:-3000}/health || exit 1'
+# Health check - hardcoded port 8080 for reliability
+HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=5 \
+    CMD wget --quiet --tries=1 --spider http://localhost:8080/health || exit 1
 
 # Entrypoint
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
