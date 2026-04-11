@@ -20,6 +20,14 @@ COPY packages/db/tsconfig.json ./packages/db/
 # Install root dependencies
 RUN npm install
 
+# Install workspace dependencies
+RUN cd packages/db && npm install
+RUN cd apps/api && npm install
+RUN cd apps/web && npm install
+
+# Ensure workspace node_modules directories exist (npm workspaces may hoist all deps to root)
+RUN mkdir -p /app/apps/api/node_modules /app/apps/web/node_modules /app/packages/db/node_modules
+
 # Stage 2: Build Web (React + Vite)
 FROM deps AS web-builder
 
