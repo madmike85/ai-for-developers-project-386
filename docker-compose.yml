@@ -10,17 +10,17 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=call_calendar
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/call_calendar?schema=public
-      - FRONTEND_URL=http://localhost:3000
-      - PORT=3000
+      - FRONTEND_URL=http://localhost:${PORT:-3000}
+      # PORT is passed from Hexlet (defaults to 3000)
       - NODE_ENV=production
       - PGDATA=/var/lib/postgresql/data
     ports:
-      - "3000:3000"
+      - "${PORT:-3000}:${PORT:-3000}"
     depends_on:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"]
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:$${PORT:-3000}/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
