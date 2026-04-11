@@ -4,18 +4,21 @@
 # Stage 1: Build Web (React + Vite)
 FROM node:20-slim AS web-builder
 
+# Invalidate cache to ensure fresh build
+ARG CACHE_BUST=1
+
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
 COPY apps/web/package*.json ./apps/web/
 
-# Install dependencies
+# Install dependencies with verbose output
 RUN npm install
 
 # Install platform-specific native bindings required by Vite 8
-# Automatically detect architecture using uname (works with legacy and BuildKit builders)
 RUN ARCH=$(uname -m) && \
+    echo "Architecture: $ARCH" && \
     if [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then \
         cd apps/web && npm install @rolldown/binding-linux-arm64-gnu lightningcss-linux-arm64-gnu; \
     elif [ "$ARCH" = "x86_64" ] || [ "$ARCH" = "amd64" ]; then \
@@ -32,14 +35,16 @@ COPY apps/web/vite.config.ts ./apps/web/
 COPY apps/web/tsconfig*.json ./apps/web/
 COPY apps/web/eslint.config.js ./apps/web/
 
-# Verify source files are copied
-RUN ls -la apps/web/ && ls -la apps/web/src/ | head -5
+# Debug: Show copied files
+RUN echo "=== Contents of apps/web/ ===" && ls -la apps/web/ && \
+    echo "=== Contents of apps/web/src/ ===" && ls -la apps/web/src/ | head -10
 
-# Build the frontend (outputs to apps/web/dist)
-RUN cd apps/web && npm run build 2>&1 || (echo "BUILD FAILED" && exit 1)
-
-# Verify dist was created
-RUN ls -la apps/web/dist/ || (echo "DIST NOT CREATED" && exit 1)
+# Build the frontend with explicit error handling
+RUN cd apps/web && \
+    echo "Starting build..." && \
+    npm run build 2>&1 && \
+    echo "Build completed, checking dist..." && \
+    ls -la dist/ || (echo "ERROR: dist directory not created!" && exit 1)
 
 # Stage 2: Build API (NestJS + Prisma)
 FROM node:20-slim AS api-builder
