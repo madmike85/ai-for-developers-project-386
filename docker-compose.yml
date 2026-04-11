@@ -20,12 +20,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    healthcheck:
-      test: ["CMD-SHELL", "export PORT=${PORT:-3000} && wget -q -O /dev/null http://127.0.0.1:$PORT/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
+    # Note: Health check is defined in Dockerfile, not here
+    # Dockerfile health check uses: CMD sh -c 'wget ... http://localhost:${PORT:-3000}/health'
     restart: unless-stopped
     networks:
       - app-network
