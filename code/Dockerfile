@@ -60,7 +60,7 @@ COPY apps/api/nest-cli.json ./apps/api/
 RUN cd apps/api && npm run build
 
 # Stage 4: Build Web
-FROM deps AS web-build
+FROM deps AS web-builder
 
 WORKDIR /app
 
@@ -84,7 +84,10 @@ COPY apps/web/eslint.config.js ./apps/web/
 # Build web application (production)
 ENV VITE_API_URL=http://localhost:3000
 ENV VITE_USE_MOCK_API=false
-RUN npm run build --workspace=web
+RUN cd apps/web && npm run build
+
+# Ensure dist layer is properly exported (create marker file to force layer creation)
+RUN touch /app/apps/web/dist/.build-complete && ls -la /app/apps/web/dist/
 
 # Stage 5: Runtime with PostgreSQL and Node.js
 FROM postgres:15-alpine AS runtime
@@ -135,7 +138,7 @@ COPY --from=db-build --chown=postgres:postgres /app/packages/db/src ./packages/d
 COPY --from=api-build --chown=postgres:postgres /app/apps/api/dist ./apps/api/dist/
 
 # Copy built Web files (static assets to be served by API)
-COPY --from=web-build --chown=postgres:postgres /app/apps/web/dist ./apps/web/dist/
+COPY --from=web-builder --chown=postgres:postgres /app/apps/web/dist ./apps/web/dist/
 
 # Copy entrypoint script
 COPY --chown=postgres:postgres docker-entrypoint.sh /usr/local/bin/
