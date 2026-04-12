@@ -122,7 +122,8 @@ ENV NODE_ENV=production
 ENV PGDATA=/app/pgdata
 
 # Copy node_modules from builder
-COPY --from=deps --chown=postgres:postgres /app/node_modules ./node_modules
+# Root node_modules must come from db-build (contains generated Prisma client in .prisma/client/)
+COPY --from=db-build --chown=postgres:postgres /app/node_modules ./node_modules
 COPY --from=deps --chown=postgres:postgres /app/apps/api/node_modules ./apps/api/node_modules
 COPY --from=deps --chown=postgres:postgres /app/apps/web/node_modules ./apps/web/node_modules
 COPY --from=deps --chown=postgres:postgres /app/packages/db/node_modules ./packages/db/node_modules
