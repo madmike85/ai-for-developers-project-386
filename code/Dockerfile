@@ -104,8 +104,9 @@ RUN apk add --no-cache nodejs npm wget openssl
 # Create postgres data directory and set permissions
 RUN mkdir -p /var/lib/postgresql/data && chown -R postgres:postgres /var/lib/postgresql/data
 
-# Create app directory and set permissions
-RUN mkdir -p /app && chown -R postgres:postgres /app
+# Create app directory (and all subdirectories used at runtime) and set permissions
+RUN mkdir -p /app/apps/api/public /app/apps/web/dist /app/packages/db \
+    && chown -R postgres:postgres /app
 
 # Switch to postgres user for subsequent operations
 USER postgres
