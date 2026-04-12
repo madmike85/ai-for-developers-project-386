@@ -8,17 +8,7 @@ echo "================================"
 echo "Call Calendar - Starting Services"
 echo "================================"
 
-# Initialize PostgreSQL data directory if not already done
-if [ -z "$(ls -A "$PGDATA" 2>/dev/null)" ]; then
-    echo "Initializing PostgreSQL data directory..."
-    initdb -D "$PGDATA" --auth=trust --auth-host=md5 --auth-local=trust
-    
-    # Configure PostgreSQL to listen on all interfaces
-    echo "host all all 0.0.0.0/0 md5" >> "$PGDATA/pg_hba.conf"
-    echo "listen_addresses='*'" >> "$PGDATA/postgresql.conf"
-fi
-
-# Start PostgreSQL
+# Start PostgreSQL (data directory is pre-initialized in Docker image)
 echo "Starting PostgreSQL..."
 pg_ctl -D "$PGDATA" -l /var/lib/postgresql/logfile start
 
@@ -51,10 +41,6 @@ psql -U "$POSTGRES_USER" -c "ALTER USER $POSTGRES_USER WITH PASSWORD '$POSTGRES_
 echo "Running database migrations..."
 cd /app/packages/db
 npx prisma migrate deploy --schema=./prisma/schema.prisma || true
-
-# Generate Prisma client (in case it's needed)
-echo "Generating Prisma client..."
-npx prisma generate --schema=./prisma/schema.prisma || true
 
 cd /app
 

@@ -148,11 +148,21 @@ COPY --from=web-builder --chown=postgres:postgres /app/apps/web/dist ./apps/web/
 COPY --chown=postgres:postgres docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
+# Pre-initialize PostgreSQL at build time to speed up container startup
+RUN initdb -D "$PGDATA" --auth=trust --auth-host=md5 --auth-local=trust \
+    && echo "host all all 0.0.0.0/0 md5" >> "$PGDATA/pg_hba.conf" \
+    && echo "listen_addresses='*'" >> "$PGDATA/postgresql.conf" \
+    && pg_ctl -D "$PGDATA" -w start -o "-c listen_addresses='localhost'" \
+    && psql -U postgres -c "CREATE DATABASE call_calendar;" \
+    && psql -U postgres -c "ALTER USER postgres WITH PASSWORD 'postgres';" \
+    && pg_ctl -D "$PGDATA" -w stop
+
 # Expose port (will use PORT environment variable at runtime)
 EXPOSE 3000
 
-# Health check - uses PORT env var at runtime (exec form prevents build-time substitution)
-HEALTHCHECK --interval=5s --timeout=3s --start-period=30s --retries=5 \
+# Health check - retries=30 with interval=2s gives 60s window; start-period=0s means
+# Docker starts checking immediately so healthcheck passes as soon as API responds
+HEALTHCHECK --interval=2s --timeout=3s --start-period=0s --retries=30 \
   CMD ["sh", "-c", "wget -qO- http://localhost:${PORT:-3000}/health || exit 1"]
 
 # Entrypoint
