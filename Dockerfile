@@ -114,8 +114,9 @@ ENV POSTGRES_USER=postgres
 ENV POSTGRES_PASSWORD=postgres
 ENV POSTGRES_DB=call_calendar
 ENV DATABASE_URL=postgresql://postgres:postgres@localhost:5432/call_calendar?schema=public
-ENV FRONTEND_URL=http://localhost:3000
+# Internal port is always 3000 (external mapping handled by docker-compose)
 ENV PORT=3000
+ENV FRONTEND_URL=http://localhost:3000
 ENV NODE_ENV=production
 ENV PGDATA=/var/lib/postgresql/data
 
@@ -151,8 +152,9 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 EXPOSE 3000
 
 # Health check for Hexlet CI - checks if API is responding
+# Always use port 3000 internally (external port mapping is handled by docker-compose)
 HEALTHCHECK --interval=5s --timeout=3s --start-period=30s --retries=5 \
-  CMD sh -c 'wget -qO- http://localhost:${PORT:-3000}/health || exit 1'
+  CMD wget -qO- http://localhost:3000/health || exit 1
 
 # Entrypoint
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
