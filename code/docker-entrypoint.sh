@@ -60,8 +60,8 @@ cd /app
 
 # Setup static files for web frontend
 echo "Setting up static files..."
-mkdir -p /app/apps/api/dist/public
-cp -r /app/apps/web/dist/* /app/apps/api/dist/public/ 2>/dev/null || true
+mkdir -p /app/apps/api/public
+cp -r /app/apps/web/dist/* /app/apps/api/public/ 2>/dev/null || true
 
 echo "================================"
 echo "Starting API Server on port $PORT"
