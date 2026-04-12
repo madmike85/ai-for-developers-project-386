@@ -100,8 +100,9 @@ WORKDIR /app
 # Install Node.js 20 in the PostgreSQL image
 RUN apk add --no-cache nodejs npm wget openssl
 
-# Create postgres data directory and set permissions
-RUN mkdir -p /var/lib/postgresql/data && chown -R postgres:postgres /var/lib/postgresql/data
+# Use /app/pgdata instead of /var/lib/postgresql/data because the postgres base image
+# declares that path as a VOLUME (data written during build is discarded at runtime)
+RUN mkdir -p /app/pgdata && chown -R postgres:postgres /app/pgdata
 
 # Create app directory and set permissions
 RUN mkdir -p /app && chown -R postgres:postgres /app
@@ -118,7 +119,7 @@ ENV DATABASE_URL=postgresql://postgres:postgres@localhost:5432/call_calendar?sch
 ENV PORT=3000
 ENV FRONTEND_URL=http://localhost:3000
 ENV NODE_ENV=production
-ENV PGDATA=/var/lib/postgresql/data
+ENV PGDATA=/app/pgdata
 
 # Copy node_modules from builder
 COPY --from=deps --chown=postgres:postgres /app/node_modules ./node_modules
