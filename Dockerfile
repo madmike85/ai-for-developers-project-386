@@ -151,10 +151,9 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 # Expose port (will use PORT environment variable at runtime)
 EXPOSE 3000
 
-# Health check for Hexlet CI - checks if API is responding
-# Always use port 3000 internally (external port mapping is handled by docker-compose)
+# Health check - uses PORT env var (Hexlet CI passes PORT=8080)
 HEALTHCHECK --interval=5s --timeout=3s --start-period=30s --retries=5 \
-  CMD wget -qO- http://localhost:3000/health || exit 1
+  CMD wget -qO- http://localhost:${PORT:-3000}/health || exit 1
 
 # Entrypoint
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

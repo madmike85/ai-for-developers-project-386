@@ -63,11 +63,8 @@ echo "Setting up static files..."
 mkdir -p /app/apps/api/dist/public
 cp -r /app/apps/web/dist/* /app/apps/api/dist/public/ 2>/dev/null || true
 
-# Always use port 3000 internally (external port mapping handled by docker-compose)
-INTERNAL_PORT=3000
-
-# Override any external PORT variable to ensure consistency
-export PORT=$INTERNAL_PORT
+# Use PORT from environment if set, default to 3000
+export PORT=${PORT:-3000}
 
 echo "================================"
 echo "Starting API Server on port $PORT"
